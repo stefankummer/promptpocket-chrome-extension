@@ -1,0 +1,34 @@
+{
+  "extensionName": {
+    "message": "PromptPocket",
+    "description": "The name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Save AI prompts from any website to your PromptPocket account. Organize, tag, and access your prompts anywhere. Quick save with right-click or keyboard shortcut.",
+    "description": "The description of the extension"
+  },
+  "contextMenuSave": {
+    "message": "Save to PromptPocket",
+    "description": "Context menu item to save selection"
+  },
+  "contextMenuQuickSave": {
+    "message": "Quick Save to PromptPocket",
+    "description": "Context menu item to quick save selection"
+  },
+  "notificationSaved": {
+    "message": "Prompt saved successfully!",
+    "description": "Notification when prompt is saved"
+  },
+  "notificationFailed": {
+    "message": "Failed to save prompt",
+    "description": "Notification when save fails"
+  },
+  "notificationConnect": {
+    "message": "Please connect to PromptPocket first",
+    "description": "Notification when not connected"
+  },
+  "notificationSelectText": {
+    "message": "Please select some text first",
+    "description": "Notification when no text selected"
+  }
+}

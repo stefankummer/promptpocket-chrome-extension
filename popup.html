@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PromptPocket</title>
+        <link rel="stylesheet" href="popup.css" />
+    </head>
+    <body>
+        <div class="container">
+            <!-- Header -->
+            <header class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+                            />
+                            <path d="M5 3v4" />
+                            <path d="M19 17v4" />
+                            <path d="M3 5h4" />
+                            <path d="M17 19h4" />
+                        </svg>
+                    </div>
+                    <span data-i18n="appName">PromptPocket</span>
+                </div>
+                <button
+                    id="settingsBtn"
+                    class="icon-btn"
+                    data-i18n-title="settings"
+                    title="Settings"
+                >
+                    <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                        ></path>
+                    </svg>
+                </button>
+            </header>
+
+            <!-- Login View -->
+            <div id="loginView" class="view">
+                <div class="login-content">
+                    <div class="login-icon">
+                        <svg
+                            width="48"
+                            height="48"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                        >
+                            <rect
+                                x="3"
+                                y="11"
+                                width="18"
+                                height="11"
+                                rx="2"
+                                ry="2"
+                            ></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <h2 data-i18n="connectTitle">Connect to PromptPocket</h2>
+                    <p class="login-description" data-i18n="connectDescription">
+                        Enter your API key to start saving prompts from any
+                        website.
+                    </p>
+                    <div class="form-group">
+                        <label for="apiKeyInput" data-i18n="apiKey"
+                            >API Key</label
+                        >
+                        <input
+                            type="password"
+                            id="apiKeyInput"
+                            data-i18n-placeholder="apiKeyPlaceholder"
+                            placeholder="ppk_XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"
+                        />
+                    </div>
+                    <button id="connectBtn" class="btn btn-primary btn-block">
+                        <span data-i18n="connect">Connect</span>
+                    </button>
+                    <p class="help-text">
+                        <span data-i18n="findApiKey"
+                            >Find your API key in your</span
+                        >
+                        <a
+                            id="apiKeyLink"
+                            href="https://promptpocket.app/en/settings/api-key"
+                            target="_blank"
+                            data-i18n="accountSettings"
+                            >account settings</a
+                        >
+                    </p>
+                </div>
+            </div>
+
+            <!-- Main View -->
+            <div id="mainView" class="view hidden">
+                <!-- User Info Bar -->
+                <div class="user-bar">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <span class="user-name" id="userName">User</span>
+                    </div>
+                    <button
+                        id="logoutBtn"
+                        class="btn btn-sm btn-ghost"
+                        data-i18n="logout"
+                    >
+                        Logout
+                    </button>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button
+                        class="tab active"
+                        data-tab="add"
+                        data-i18n="addPrompt"
+                    >
+                        Add Prompt
+                    </button>
+                    <button class="tab" data-tab="quick" data-i18n="quickSave">
+                        Quick Save
+                    </button>
+                </div>
+
+                <!-- Add Prompt Tab -->
+                <div id="addTab" class="tab-content active">
+                    <form id="promptForm">
+                        <div class="form-group">
+                            <label for="promptTitle"
+                                ><span data-i18n="title">Title</span>
+                                <span class="required">*</span></label
+                            >
+                            <input
+                                type="text"
+                                id="promptTitle"
+                                data-i18n-placeholder="titlePlaceholder"
+                                placeholder="Enter prompt title"
+                                required
+                            />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="promptContent"
+                                ><span data-i18n="content">Content</span>
+                                <span class="required">*</span></label
+                            >
+                            <textarea
+                                id="promptContent"
+                                rows="5"
+                                data-i18n-placeholder="contentPlaceholder"
+                                placeholder="Enter your prompt content..."
+                                required
+                            ></textarea>
+                            <button
+                                type="button"
+                                id="getSelectionBtn"
+                                class="btn btn-sm btn-ghost mt-1"
+                            >
+                                <svg
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                >
+                                    <path
+                                        d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                                    ></path>
+                                    <rect
+                                        x="8"
+                                        y="2"
+                                        width="8"
+                                        height="4"
+                                        rx="1"
+                                        ry="1"
+                                    ></rect>
+                                </svg>
+                                <span data-i18n="getSelectedText"
+                                    >Get selected text</span
+                                >
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label
+                                for="promptDescription"
+                                data-i18n="description"
+                                >Description</label
+                            >
+                            <input
+                                type="text"
+                                id="promptDescription"
+                                data-i18n-placeholder="descriptionPlaceholder"
+                                placeholder="Brief description (optional)"
+                            />
+                        </div>
+
+                        <div class="form-group">
+                            <label data-i18n="aiTools">AI Tools</label>
+                            <div class="multiselect" id="toolsSelect">
+                                <div class="multiselect-input" id="toolsInput">
+                                    <div
+                                        class="selected-items"
+                                        id="selectedTools"
+                                    ></div>
+                                    <input
+                                        type="text"
+                                        id="toolsSearch"
+                                        data-i18n-placeholder="searchTools"
+                                        placeholder="Search or add tools..."
+                                    />
+                                </div>
+                                <div
+                                    class="multiselect-dropdown hidden"
+                                    id="toolsDropdown"
+                                >
+                                    <div
+                                        class="dropdown-list"
+                                        id="toolsList"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label data-i18n="tags">Tags</label>
+                            <div class="multiselect" id="tagsSelect">
+                                <div class="multiselect-input" id="tagsInput">
+                                    <div
+                                        class="selected-items"
+                                        id="selectedTags"
+                                    ></div>
+                                    <input
+                                        type="text"
+                                        id="tagsSearch"
+                                        data-i18n-placeholder="searchTags"
+                                        placeholder="Search or add tags..."
+                                    />
+                                </div>
+                                <div
+                                    class="multiselect-dropdown hidden"
+                                    id="tagsDropdown"
+                                >
+                                    <div
+                                        class="dropdown-list"
+                                        id="tagsList"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="promptNotes" data-i18n="notes"
+                                >Notes (private)</label
+                            >
+                            <textarea
+                                id="promptNotes"
+                                rows="2"
+                                data-i18n-placeholder="notesPlaceholder"
+                                placeholder="Personal notes, only visible to you..."
+                            ></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group flex-1">
+                                <label for="promptStatus" data-i18n="status"
+                                    >Status</label
+                                >
+                                <select id="promptStatus">
+                                    <option
+                                        value="published"
+                                        data-i18n="published"
+                                    >
+                                        Published
+                                    </option>
+                                    <option value="draft" data-i18n="draft">
+                                        Draft
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="promptPublic" />
+                                    <span data-i18n="makePublic"
+                                        >Make public</span
+                                    >
+                                </label>
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            id="saveBtn"
+                            class="btn btn-primary btn-block"
+                        >
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path
+                                    d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+                                ></path>
+                                <polyline
+                                    points="17 21 17 13 7 13 7 21"
+                                ></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            <span data-i18n="savePrompt">Save Prompt</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Quick Save Tab -->
+                <div id="quickTab" class="tab-content hidden">
+                    <div class="quick-save-info">
+                        <svg
+                            width="32"
+                            height="32"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                        >
+                            <path
+                                d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                            ></path>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                        <h3 data-i18n="quickSaveTitle">Quick Save</h3>
+                        <p data-i18n="quickSaveDescription">
+                            Select text on any webpage and right-click to
+                            quickly save it as a prompt.
+                        </p>
+                        <p class="text-muted" data-i18n="keyboardShortcut">
+                            Or use the keyboard shortcut:
+                        </p>
+                        <kbd>Alt + Shift + S</kbd>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settingsView" class="view hidden">
+                <div class="settings-header">
+                    <button id="backBtn" class="icon-btn">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path d="M19 12H5"></path>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </button>
+                    <h2 data-i18n="settingsTitle">Settings</h2>
+                </div>
+
+                <div class="settings-content">
+                    <div class="setting-item">
+                        <label data-i18n="language">Language</label>
+                        <select id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="fr">Français</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label data-i18n="theme">Theme</label>
+                        <select id="themeSelect">
+                            <option value="system" data-i18n="themeSystem">
+                                System
+                            </option>
+                            <option value="light" data-i18n="themeLight">
+                                Light
+                            </option>
+                            <option value="dark" data-i18n="themeDark">
+                                Dark
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label data-i18n="apiEndpoint">API Endpoint</label>
+                        <input
+                            type="text"
+                            id="apiEndpoint"
+                            value="https://promptpocket.app/api/v1"
+                        />
+                    </div>
+
+                    <div class="setting-item">
+                        <label data-i18n="defaultStatus">Default Status</label>
+                        <select id="defaultStatus">
+                            <option value="published" data-i18n="published">
+                                Published
+                            </option>
+                            <option value="draft" data-i18n="draft">
+                                Draft
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="autoGetSelection" />
+                            <span data-i18n="autoFill"
+                                >Auto-fill with selected text</span
+                            >
+                        </label>
+                    </div>
+
+                    <button
+                        id="saveSettingsBtn"
+                        class="btn btn-primary btn-block"
+                        data-i18n="saveSettings"
+                    >
+                        Save Settings
+                    </button>
+
+                    <hr />
+
+                    <div class="setting-item danger-zone">
+                        <label data-i18n="dangerZone">Danger Zone</label>
+                        <button
+                            id="clearDataBtn"
+                            class="btn btn-danger btn-block"
+                            data-i18n="clearAllData"
+                        >
+                            Clear All Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast Notification -->
+            <div id="toast" class="toast hidden">
+                <span id="toastMessage"></span>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="loading-overlay hidden">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <script src="locales.js"></script>
+        <script src="popup.js"></script>
+    </body>
+</html>
