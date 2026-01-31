@@ -22,10 +22,9 @@ Save prompts from any website directly to your PromptPocket account.
 4. Select the `chrome-extension` folder
 5. The PromptPocket extension icon should appear in your toolbar
 
-### Building for Production
+### From Chrome Extension Store
 
-1. Zip all files in the `chrome-extension` folder
-2. Upload to the Chrome Web Store Developer Dashboard
+Extension is actually not present in store, but will be soon.
 
 ## Usage
 
@@ -38,29 +37,33 @@ Save prompts from any website directly to your PromptPocket account.
 ### Saving a Prompt
 
 #### Method 1: Full Form
+
 1. Click the PromptPocket icon
 2. Fill in the prompt details:
-   - **Title** (required): A descriptive title
-   - **Content** (required): The prompt text
-   - **Description**: A brief summary
-   - **AI Tools**: Select relevant AI tools
-   - **Tags**: Categorize your prompt
-   - **Notes**: Private notes only you can see
-   - **Status**: Draft, Published, or Archived
-   - **Make public**: Share with the community
+    - **Title** (required): A descriptive title
+    - **Content** (required): The prompt text
+    - **Description**: A brief summary
+    - **AI Tools**: Select relevant AI tools
+    - **Tags**: Categorize your prompt
+    - **Notes**: Private notes only you can see
+    - **Status**: Draft, Published, or Archived
+    - **Make public**: Share with the community
 3. Click "Save Prompt"
 
 #### Method 2: Quick Save (Right-click)
+
 1. Select text on any webpage
 2. Right-click and choose "Quick Save to PromptPocket"
 3. The prompt is saved automatically with the selected text
 
 #### Method 3: Keyboard Shortcut
+
 1. Select text on any webpage
 2. Press `Alt+Shift+S`
 3. The prompt is saved instantly
 
 ### Getting Selected Text
+
 When the popup opens, click "Get selected text" to automatically fill the content field with text you've selected on the page.
 
 ## Settings
@@ -76,6 +79,8 @@ Access settings by clicking the gear icon:
 
 ```
 chrome-extension/
+├── LICENCE             # Apache Licence 2.0
+├── README.md           # This file
 ├── manifest.json       # Extension configuration
 ├── popup.html          # Popup UI
 ├── popup.css           # Popup styles
@@ -106,14 +111,17 @@ chrome-extension/
 ## Troubleshooting
 
 ### "Invalid API key" error
+
 - Ensure you've copied the full API key including the `ppk_` prefix
 - Generate a new API key in your account settings if needed
 
 ### Context menu not showing
+
 - Reload the extension from chrome://extensions/
 - Make sure the extension has the necessary permissions
 
 ### Quick save not working
+
 - Ensure you're connected (API key entered)
 - Select some text before using the shortcut
 

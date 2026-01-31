@@ -218,6 +218,33 @@
                         </div>
 
                         <div class="form-group">
+                            <label data-i18n="folder">Folder</label>
+                            <div class="multiselect" id="folderSelect">
+                                <div class="multiselect-input" id="folderInput">
+                                    <div
+                                        class="selected-items"
+                                        id="selectedFolder"
+                                    ></div>
+                                    <input
+                                        type="text"
+                                        id="folderSearch"
+                                        data-i18n-placeholder="searchFolder"
+                                        placeholder="Search or create folder..."
+                                    />
+                                </div>
+                                <div
+                                    class="multiselect-dropdown hidden"
+                                    id="folderDropdown"
+                                >
+                                    <div
+                                        class="dropdown-list"
+                                        id="folderList"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label data-i18n="aiTools">AI Tools</label>
                             <div class="multiselect" id="toolsSelect">
                                 <div class="multiselect-input" id="toolsInput">

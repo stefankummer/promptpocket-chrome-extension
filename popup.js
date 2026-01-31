@@ -13,8 +13,10 @@ class PromptPocketExtension {
         };
         this.tools = [];
         this.tags = [];
+        this.folders = [];
         this.selectedTools = [];
         this.selectedTags = [];
+        this.selectedFolder = null;
         this.currentLang = 'en';
 
         this.init();
@@ -198,6 +200,17 @@ class PromptPocketExtension {
             return this.tags;
         } catch (error) {
             console.error('Failed to fetch tags:', error);
+            return [];
+        }
+    }
+
+    async fetchFolders() {
+        try {
+            const response = await this.apiRequest('/folders');
+            this.folders = response.data || [];
+            return this.folders;
+        } catch (error) {
+            console.error('Failed to fetch folders:', error);
             return [];
         }
     }
@@ -436,6 +449,154 @@ class PromptPocketExtension {
         return div.innerHTML;
     }
 
+    // Folder select handler
+    setupFolderSelect() {
+        const searchInput = document.getElementById('folderSearch');
+        const dropdown = document.getElementById('folderDropdown');
+        const list = document.getElementById('folderList');
+        const selectedContainer = document.getElementById('selectedFolder');
+
+        const renderSelected = () => {
+            if (this.selectedFolder) {
+                selectedContainer.innerHTML = `
+                    <span class="selected-item">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        ${this.escapeHtml(this.selectedFolder.name)}
+                        <button type="button" title="${this.t('remove')}">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <path d="M18 6L6 18M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </span>
+                `;
+                selectedContainer.querySelector('button').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.selectedFolder = null;
+                    renderSelected();
+                    renderDropdown();
+                });
+                searchInput.style.display = 'none';
+            } else {
+                selectedContainer.innerHTML = '';
+                searchInput.style.display = '';
+            }
+        };
+
+        const renderDropdown = (filter = '') => {
+            const filterLower = filter.toLowerCase();
+            const filtered = this.folders.filter(
+                (folder) => folder.name.toLowerCase().includes(filterLower)
+            );
+
+            let html = '';
+
+            // Option "No folder"
+            if (!filter || this.t('noFolder').toLowerCase().includes(filterLower)) {
+                html += `
+                    <div class="dropdown-item ${!this.selectedFolder ? 'selected' : ''}" data-id="">
+                        <span>${this.t('noFolder')}</span>
+                    </div>
+                `;
+            }
+
+            // Show filtered folders
+            filtered.slice(0, 10).forEach((folder) => {
+                html += `
+                    <div class="dropdown-item" data-id="${folder.id}" data-name="${this.escapeHtml(folder.name)}">
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            ${this.escapeHtml(folder.name)}
+                        </span>
+                    </div>
+                `;
+            });
+
+            // Show "create new folder" option
+            if (filter && !this.folders.some((f) => f.name.toLowerCase() === filterLower)) {
+                html += `
+                    <div class="dropdown-item create-new" data-create="${this.escapeHtml(filter)}">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        ${this.t('createFolder')} "${this.escapeHtml(filter)}"
+                    </div>
+                `;
+            }
+
+            if (!html) {
+                html = `<div class="dropdown-empty">${this.t('noItemsFound')}</div>`;
+            }
+
+            list.innerHTML = html;
+
+            // Add click handlers
+            list.querySelectorAll('.dropdown-item:not(.dropdown-empty)').forEach((item) => {
+                item.addEventListener('click', async () => {
+                    if (item.dataset.create) {
+                        // Create new folder
+                        try {
+                            this.showLoading();
+                            const response = await this.apiRequest('/folders', {
+                                method: 'POST',
+                                body: JSON.stringify({ name: item.dataset.create }),
+                            });
+                            const newFolder = response.data;
+                            this.folders.push(newFolder);
+                            this.selectedFolder = newFolder;
+                        } catch (error) {
+                            this.showToast(error.message || this.t('failedToSave'), 'error');
+                        } finally {
+                            this.hideLoading();
+                        }
+                    } else if (item.dataset.id === '') {
+                        // No folder selected
+                        this.selectedFolder = null;
+                    } else {
+                        // Select existing folder
+                        const existingFolder = this.folders.find((f) => f.id == item.dataset.id);
+                        if (existingFolder) {
+                            this.selectedFolder = existingFolder;
+                        }
+                    }
+                    searchInput.value = '';
+                    dropdown.classList.add('hidden');
+                    renderSelected();
+                });
+            });
+        };
+
+        // Input events
+        searchInput.addEventListener('focus', () => {
+            dropdown.classList.remove('hidden');
+            renderDropdown(searchInput.value);
+        });
+
+        searchInput.addEventListener('input', () => {
+            renderDropdown(searchInput.value);
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('folderSelect').contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // Initial render
+        renderSelected();
+        renderDropdown();
+    }
+
     // Auth & State Management
     async checkAuthStatus() {
         if (!this.apiKey) {
@@ -463,8 +624,8 @@ class PromptPocketExtension {
         this.showLoading();
 
         try {
-            // Fetch tools and tags in parallel
-            await Promise.all([this.fetchTools(), this.fetchTags()]);
+            // Fetch tools, tags and folders in parallel
+            await Promise.all([this.fetchTools(), this.fetchTags(), this.fetchFolders()]);
 
             this.updateUserInfo();
             this.showView('mainView');
@@ -472,8 +633,10 @@ class PromptPocketExtension {
             // Setup multi-selects
             this.selectedTools = [];
             this.selectedTags = [];
+            this.selectedFolder = null;
             this.setupMultiSelect('tools');
             this.setupMultiSelect('tags');
+            this.setupFolderSelect();
 
             // Apply default settings
             document.getElementById('promptStatus').value =
@@ -531,8 +694,10 @@ class PromptPocketExtension {
             this.settings.defaultStatus;
         this.selectedTools = [];
         this.selectedTags = [];
+        this.selectedFolder = null;
         this.setupMultiSelect('tools');
         this.setupMultiSelect('tags');
+        this.setupFolderSelect();
     }
 
     // Event Listeners
@@ -736,14 +901,17 @@ class PromptPocketExtension {
                     if (this.selectedTags.length > 0) {
                         data.tags = this.selectedTags.map((t) => t.name);
                     }
+                    if (this.selectedFolder) {
+                        data.folder_id = this.selectedFolder.id;
+                    }
 
                     const response = await this.createPrompt(data);
 
                     this.showToast(this.t('promptSaved'), 'success');
                     this.resetForm();
 
-                    // Refresh tools and tags to include newly created ones
-                    await Promise.all([this.fetchTools(), this.fetchTags()]);
+                    // Refresh tools, tags and folders to include newly created ones
+                    await Promise.all([this.fetchTools(), this.fetchTags(), this.fetchFolders()]);
                 } catch (error) {
                     this.showToast(
                         error.message || this.t('failedToSave'),
