@@ -69,6 +69,18 @@ class PromptPocketExtension {
             apiKeyLink.href = `https://promptpocket.app/${this.currentLang}/settings/api-key`;
         }
 
+        // Update privacy policy link with correct language
+        const privacyPolicyLink = document.getElementById('privacyPolicyLink');
+        if (privacyPolicyLink) {
+            privacyPolicyLink.href = `https://promptpocket.app/${this.currentLang}/privacy`;
+        }
+
+        // Update visibility label
+        const promptPublic = document.getElementById('promptPublic');
+        if (promptPublic) {
+            this.updateVisibilityLabel(promptPublic.checked);
+        }
+
         // Set language selector value
         const langSelect = document.getElementById('languageSelect');
         if (langSelect) {
@@ -449,6 +461,13 @@ class PromptPocketExtension {
         return div.innerHTML;
     }
 
+    updateVisibilityLabel(isPublic) {
+        const label = document.getElementById('visibilityLabel');
+        if (label) {
+            label.textContent = isPublic ? this.t('publicVisibility') : this.t('private');
+        }
+    }
+
     // Folder select handler
     setupFolderSelect() {
         const searchInput = document.getElementById('folderSearch');
@@ -698,6 +717,7 @@ class PromptPocketExtension {
         this.setupMultiSelect('tools');
         this.setupMultiSelect('tags');
         this.setupFolderSelect();
+        this.updateVisibilityLabel(false);
     }
 
     // Event Listeners
@@ -854,6 +874,13 @@ class PromptPocketExtension {
             .getElementById('getSelectionBtn')
             .addEventListener('click', () => {
                 this.getSelectedText();
+            });
+
+        // Visibility toggle - update label text
+        document
+            .getElementById('promptPublic')
+            .addEventListener('change', (e) => {
+                this.updateVisibilityLabel(e.target.checked);
             });
 
         // Prompt form submission

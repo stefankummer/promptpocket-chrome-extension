@@ -41,7 +41,9 @@ const LOCALES = {
     status: 'Status',
     published: 'Published',
     draft: 'Draft',
-    makePublic: 'Make public',
+    visibility: 'Visibility',
+    private: 'Private',
+    publicVisibility: 'Public',
     savePrompt: 'Save Prompt',
 
     // Quick save tab
@@ -63,6 +65,7 @@ const LOCALES = {
     dangerZone: 'Danger Zone',
     clearAllData: 'Clear All Data',
     clearDataConfirm: 'Are you sure you want to clear all data? This will log you out and reset all settings.',
+    clearDataHint: 'This only removes local data and disconnects the extension. Your PromptPocket account is not affected.',
 
     // Multi-select
     public: 'Public',
@@ -82,7 +85,8 @@ const LOCALES = {
     failedToLoad: 'Failed to load data',
     titleContentRequired: 'Title and content are required',
     failedToSave: 'Failed to save prompt',
-    remove: 'Remove'
+    remove: 'Remove',
+    privacyPolicy: 'Privacy Policy'
   },
 
   fr: {
@@ -125,7 +129,9 @@ const LOCALES = {
     status: 'Statut',
     published: 'Publié',
     draft: 'Brouillon',
-    makePublic: 'Rendre public',
+    visibility: 'Visibilité',
+    private: 'Privé',
+    publicVisibility: 'Public',
     savePrompt: 'Enregistrer le prompt',
 
     // Quick save tab
@@ -147,6 +153,7 @@ const LOCALES = {
     dangerZone: 'Zone de danger',
     clearAllData: 'Effacer toutes les données',
     clearDataConfirm: 'Êtes-vous sûr de vouloir effacer toutes les données ? Cela vous déconnectera et réinitialisera tous les paramètres.',
+    clearDataHint: 'Cela supprime uniquement les données locales et déconnecte l\'extension. Votre compte PromptPocket n\'est pas affecté.',
 
     // Multi-select
     public: 'Public',
@@ -166,7 +173,8 @@ const LOCALES = {
     failedToLoad: 'Échec du chargement des données',
     titleContentRequired: 'Le titre et le contenu sont requis',
     failedToSave: 'Échec de l\'enregistrement du prompt',
-    remove: 'Supprimer'
+    remove: 'Supprimer',
+    privacyPolicy: 'Politique de confidentialité'
   },
 
   de: {
@@ -209,7 +217,9 @@ const LOCALES = {
     status: 'Status',
     published: 'Veröffentlicht',
     draft: 'Entwurf',
-    makePublic: 'Öffentlich machen',
+    visibility: 'Sichtbarkeit',
+    private: 'Privat',
+    publicVisibility: 'Öffentlich',
     savePrompt: 'Prompt speichern',
 
     // Quick save tab
@@ -231,6 +241,7 @@ const LOCALES = {
     dangerZone: 'Gefahrenzone',
     clearAllData: 'Alle Daten löschen',
     clearDataConfirm: 'Sind Sie sicher, dass Sie alle Daten löschen möchten? Dies meldet Sie ab und setzt alle Einstellungen zurück.',
+    clearDataHint: 'Dies entfernt nur lokale Daten und trennt die Erweiterung. Ihr PromptPocket-Konto ist nicht betroffen.',
 
     // Multi-select
     public: 'Öffentlich',
@@ -250,7 +261,8 @@ const LOCALES = {
     failedToLoad: 'Laden der Daten fehlgeschlagen',
     titleContentRequired: 'Titel und Inhalt sind erforderlich',
     failedToSave: 'Speichern des Prompts fehlgeschlagen',
-    remove: 'Entfernen'
+    remove: 'Entfernen',
+    privacyPolicy: 'Datenschutzrichtlinie'
   }
 };
 
