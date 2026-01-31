@@ -4,7 +4,7 @@
         "description": "The name of the extension"
     },
     "extensionDescription": {
-        "message": "Sauvegardez des prompts IA depuis n'importe quel site vers votre compte PromptPocket. Organisez, taguez et accédez à vos prompts partout. Sauvegarde rapide avec clic droit ou raccourci clavier.",
+        "message": "Sauvegardez des prompts IA depuis n'importe quel site vers votre compte PromptPocket. Organisez, taguez et accédez à vos prompts partout.",
         "description": "The description of the extension"
     },
     "contextMenuSave": {

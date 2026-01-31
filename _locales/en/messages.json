@@ -4,7 +4,7 @@
         "description": "The name of the extension"
     },
     "extensionDescription": {
-        "message": "Save AI prompts from any website to your PromptPocket account. Organize, tag, and access your prompts anywhere. Quick save with right-click or keyboard shortcut.",
+        "message": "Save AI prompts from any website to your PromptPocket account. Organize, tag, and access your prompts anywhere.",
         "description": "The description of the extension"
     },
     "contextMenuSave": {

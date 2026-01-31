@@ -4,7 +4,7 @@
         "description": "The name of the extension"
     },
     "extensionDescription": {
-        "message": "Speichern Sie KI-Prompts von jeder Website in Ihrem PromptPocket-Konto. Organisieren, taggen und greifen Sie überall auf Ihre Prompts zu. Schnelles Speichern per Rechtsklick oder Tastenkürzel.",
+        "message": "Speichern Sie KI-Prompts von jeder Website in Ihrem PromptPocket-Konto. Organisieren, taggen und greifen Sie überall auf Ihre Prompts zu.",
         "description": "The description of the extension"
     },
     "contextMenuSave": {
