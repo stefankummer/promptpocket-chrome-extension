@@ -16,15 +16,16 @@ Save prompts from any website directly to your PromptPocket account.
 
 ### From Source (Developer Mode)
 
-1. Open Chrome and navigate to `chrome://extensions/`
-2. Enable "Developer mode" in the top right corner
-3. Click "Load unpacked"
-4. Select the `chrome-extension` folder
-5. The PromptPocket extension icon should appear in your toolbar
+1. Download or clone this repository to your local machine.
+2. Open Google Chrome and navigate to `chrome://extensions/`.
+3. Enable **"Developer mode"** in the top-right corner.
+4. Click the **"Load unpacked"** button.
+5. Select the folder from your local repository or where you unzipped the package.
+6. The PromptPocket extension icon will appear in your toolbar (you may need to pin it).
 
 ### From Chrome Extension Store
 
-Extension is actually not present in store, but will be soon.
+The extension is currently **under review** by the Chrome Web Store team. For now, please use the **"From Source"** installation method described above. We will update this section with the official link as soon as it is validated.
 
 ## Usage
 
@@ -59,8 +60,10 @@ Extension is actually not present in store, but will be soon.
 #### Method 3: Keyboard Shortcut
 
 1. Select text on any webpage
-2. Press `Alt+Shift+S`
+2. Press `Alt + Shift + S` (default)
 3. The prompt is saved instantly
+
+_Note: You can customize this shortcut in the extension settings._
 
 ### Getting Selected Text
 

@@ -29,6 +29,7 @@ class PromptPocketExtension {
         await this.loadApiKey();
         this.setupEventListeners();
         this.checkAuthStatus();
+        this.updateShortcutInfo();
     }
 
     // Localization Methods
@@ -280,6 +281,21 @@ class PromptPocketExtension {
         }
     }
 
+    async updateShortcutInfo() {
+        try {
+            const commands = await chrome.commands.getAll();
+            const quickSave = commands.find((c) => c.name === 'quick-save');
+            if (quickSave && quickSave.shortcut) {
+                const shortcutEl = document.getElementById('currentShortcut');
+                if (shortcutEl) {
+                    shortcutEl.textContent = quickSave.shortcut;
+                }
+            }
+        } catch (error) {
+            console.error('Failed to get shortcuts:', error);
+        }
+    }
+
     // Multi-select handlers
     setupMultiSelect(type) {
         const items = type === 'tools' ? this.tools : this.tags;
@@ -464,7 +480,9 @@ class PromptPocketExtension {
     updateVisibilityLabel(isPublic) {
         const label = document.getElementById('visibilityLabel');
         if (label) {
-            label.textContent = isPublic ? this.t('publicVisibility') : this.t('private');
+            label.textContent = isPublic
+                ? this.t('publicVisibility')
+                : this.t('private');
         }
     }
 
@@ -490,12 +508,14 @@ class PromptPocketExtension {
                         </button>
                     </span>
                 `;
-                selectedContainer.querySelector('button').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.selectedFolder = null;
-                    renderSelected();
-                    renderDropdown();
-                });
+                selectedContainer
+                    .querySelector('button')
+                    .addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.selectedFolder = null;
+                        renderSelected();
+                        renderDropdown();
+                    });
                 searchInput.style.display = 'none';
             } else {
                 selectedContainer.innerHTML = '';
@@ -505,14 +525,17 @@ class PromptPocketExtension {
 
         const renderDropdown = (filter = '') => {
             const filterLower = filter.toLowerCase();
-            const filtered = this.folders.filter(
-                (folder) => folder.name.toLowerCase().includes(filterLower)
+            const filtered = this.folders.filter((folder) =>
+                folder.name.toLowerCase().includes(filterLower),
             );
 
             let html = '';
 
             // Option "No folder"
-            if (!filter || this.t('noFolder').toLowerCase().includes(filterLower)) {
+            if (
+                !filter ||
+                this.t('noFolder').toLowerCase().includes(filterLower)
+            ) {
                 html += `
                     <div class="dropdown-item ${!this.selectedFolder ? 'selected' : ''}" data-id="">
                         <span>${this.t('noFolder')}</span>
@@ -535,7 +558,10 @@ class PromptPocketExtension {
             });
 
             // Show "create new folder" option
-            if (filter && !this.folders.some((f) => f.name.toLowerCase() === filterLower)) {
+            if (
+                filter &&
+                !this.folders.some((f) => f.name.toLowerCase() === filterLower)
+            ) {
                 html += `
                     <div class="dropdown-item create-new" data-create="${this.escapeHtml(filter)}">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -553,7 +579,9 @@ class PromptPocketExtension {
             list.innerHTML = html;
 
             // Add click handlers
-            list.querySelectorAll('.dropdown-item:not(.dropdown-empty)').forEach((item) => {
+            list.querySelectorAll(
+                '.dropdown-item:not(.dropdown-empty)',
+            ).forEach((item) => {
                 item.addEventListener('click', async () => {
                     if (item.dataset.create) {
                         // Create new folder
@@ -561,13 +589,18 @@ class PromptPocketExtension {
                             this.showLoading();
                             const response = await this.apiRequest('/folders', {
                                 method: 'POST',
-                                body: JSON.stringify({ name: item.dataset.create }),
+                                body: JSON.stringify({
+                                    name: item.dataset.create,
+                                }),
                             });
                             const newFolder = response.data;
                             this.folders.push(newFolder);
                             this.selectedFolder = newFolder;
                         } catch (error) {
-                            this.showToast(error.message || this.t('failedToSave'), 'error');
+                            this.showToast(
+                                error.message || this.t('failedToSave'),
+                                'error',
+                            );
                         } finally {
                             this.hideLoading();
                         }
@@ -576,7 +609,9 @@ class PromptPocketExtension {
                         this.selectedFolder = null;
                     } else {
                         // Select existing folder
-                        const existingFolder = this.folders.find((f) => f.id == item.dataset.id);
+                        const existingFolder = this.folders.find(
+                            (f) => f.id == item.dataset.id,
+                        );
                         if (existingFolder) {
                             this.selectedFolder = existingFolder;
                         }
@@ -644,7 +679,11 @@ class PromptPocketExtension {
 
         try {
             // Fetch tools, tags and folders in parallel
-            await Promise.all([this.fetchTools(), this.fetchTags(), this.fetchFolders()]);
+            await Promise.all([
+                this.fetchTools(),
+                this.fetchTags(),
+                this.fetchFolders(),
+            ]);
 
             this.updateUserInfo();
             this.showView('mainView');
@@ -797,6 +836,13 @@ class PromptPocketExtension {
             this.showView('settingsView');
         });
 
+        // Shortcuts button
+        document
+            .getElementById('shortcutsBtn')
+            .addEventListener('click', () => {
+                chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
+            });
+
         // Back button
         document.getElementById('backBtn').addEventListener('click', () => {
             if (this.apiKey) {
@@ -938,7 +984,11 @@ class PromptPocketExtension {
                     this.resetForm();
 
                     // Refresh tools, tags and folders to include newly created ones
-                    await Promise.all([this.fetchTools(), this.fetchTags(), this.fetchFolders()]);
+                    await Promise.all([
+                        this.fetchTools(),
+                        this.fetchTags(),
+                        this.fetchFolders(),
+                    ]);
                 } catch (error) {
                     this.showToast(
                         error.message || this.t('failedToSave'),

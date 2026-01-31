@@ -331,10 +331,17 @@
                                 <label for="promptPublic" data-i18n="visibility"
                                     >Visibility</label
                                 >
-                                <label class="toggle-switch toggle-switch--boxed">
+                                <label
+                                    class="toggle-switch toggle-switch--boxed"
+                                >
                                     <input type="checkbox" id="promptPublic" />
                                     <span class="toggle-track"></span>
-                                    <span class="toggle-text" id="visibilityLabel" data-i18n="private">Private</span>
+                                    <span
+                                        class="toggle-text"
+                                        id="visibilityLabel"
+                                        data-i18n="private"
+                                        >Private</span
+                                    >
                                 </label>
                             </div>
                         </div>
@@ -469,6 +476,22 @@
                         </label>
                     </div>
 
+                    <div class="setting-item">
+                        <label data-i18n="shortcutTitle"
+                            >Keyboard Shortcut</label
+                        >
+                        <div class="shortcut-setting">
+                            <kbd id="currentShortcut">Alt + Shift + S</kbd>
+                            <button
+                                id="shortcutsBtn"
+                                class="btn btn-sm btn-ghost"
+                                data-i18n="changeShortcut"
+                            >
+                                Change
+                            </button>
+                        </div>
+                    </div>
+
                     <button
                         id="saveSettingsBtn"
                         class="btn btn-primary btn-block"
@@ -489,7 +512,9 @@
                             Clear All Data
                         </button>
                         <p class="danger-zone-hint" data-i18n="clearDataHint">
-                            This only removes local data and disconnects the extension. Your PromptPocket account is not affected.
+                            This only removes local data and disconnects the
+                            extension. Your PromptPocket account is not
+                            affected.
                         </p>
                     </div>
 

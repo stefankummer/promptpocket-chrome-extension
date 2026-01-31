@@ -805,6 +805,23 @@ kbd {
     margin-bottom: 6px;
 }
 
+.shortcut-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--input-bg);
+}
+
+.shortcut-setting kbd {
+    margin: 0;
+    box-shadow: none;
+    font-size: 12px;
+}
+
 hr {
     border: none;
     border-top: 1px solid var(--border-color);
