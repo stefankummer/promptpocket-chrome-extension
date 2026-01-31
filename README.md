@@ -79,15 +79,13 @@ Access settings by clicking the gear icon:
 
 ```
 chrome-extension/
-├── LICENCE             # Apache Licence 2.0
+├── LICENCE             # MIT 2.0
 ├── README.md           # This file
 ├── manifest.json       # Extension configuration
 ├── popup.html          # Popup UI
 ├── popup.css           # Popup styles
 ├── popup.js            # Popup logic
 ├── background.js       # Service worker for context menu & shortcuts
-├── content.js          # Content script for page interaction
-├── content.css         # Content script styles
 └── icons/
     ├── icon16.png
     ├── icon32.png
