@@ -107,13 +107,44 @@ async function quickSavePrompt(content, tab) {
         );
 
         // Send message to content script to show visual feedback
-        try {
-            await chrome.tabs.sendMessage(tab.id, {
+        // Send message to content script to show visual feedback
+        const sendMessage = async () => {
+            console.log(
+                'PromptPocket: Sending PROMPT_SAVED message to tab',
+                tab.id,
+            );
+            return chrome.tabs.sendMessage(tab.id, {
                 type: 'PROMPT_SAVED',
                 success: true,
             });
+        };
+
+        try {
+            await sendMessage();
+            console.log('PromptPocket: Message sent successfully');
         } catch (e) {
-            // Content script might not be loaded
+            console.warn(
+                'PromptPocket: First attempt failed, trying to inject script and retry',
+                e,
+            );
+            // If failed, try to inject the script first
+            try {
+                await chrome.scripting.executeScript({
+                    target: { tabId: tab.id },
+                    files: ['content.js'],
+                });
+                // Wait a small moment for script to initialize
+                await new Promise((resolve) => setTimeout(resolve, 100));
+                await sendMessage();
+                console.log(
+                    'PromptPocket: Message sent successfully after injection',
+                );
+            } catch (retryError) {
+                console.error(
+                    'PromptPocket: Failed to send message even after injection',
+                    retryError,
+                );
+            }
         }
     } catch (error) {
         console.error('Quick save error:', error);
@@ -157,6 +188,16 @@ chrome.commands?.onCommand?.addListener(async (command) => {
 
             const selectedText = results?.[0]?.result?.trim();
             if (selectedText) {
+                // Ensure content script is injected before saving
+                try {
+                    await chrome.scripting.executeScript({
+                        target: { tabId: tab.id },
+                        files: ['content.js'],
+                    });
+                } catch (e) {
+                    // Ignore if already injected or other error, we try to save anyway
+                    console.log('Script injection attempted', e);
+                }
                 await quickSavePrompt(selectedText, tab);
             } else {
                 await sendNotification(
