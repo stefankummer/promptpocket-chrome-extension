@@ -16,11 +16,11 @@ Save prompts from any website directly to your PromptPocket account.
 
 ### From Source (Developer Mode)
 
-1. Download or clone this repository to your local machine.
+1. Download ZIP file of this repository to your local machine.
 2. Open Google Chrome and navigate to `chrome://extensions/`.
 3. Enable **"Developer mode"** in the top-right corner.
 4. Click the **"Load unpacked"** button.
-5. Select the folder from your local repository or where you unzipped the package.
+5. Select ZIP file you downloaded.
 6. The PromptPocket extension icon will appear in your toolbar (you may need to pin it).
 
 ### From Chrome Extension Store
