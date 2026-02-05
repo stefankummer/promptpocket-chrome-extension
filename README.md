@@ -25,7 +25,7 @@ Save prompts from any website directly to your PromptPocket account.
 
 ### From Chrome Extension Store
 
-The extension is currently **under review** by the Chrome Web Store team. For now, please use the **"From Source"** installation method described above. We will update this section with the official link as soon as it is validated.
+The extension can be installed via [Chrome Web Stor](https://chromewebstore.google.com/detail/PromptPocket/glghleflbchdjgmpmkaojbknplmgkoip).
 
 ## Usage
 
