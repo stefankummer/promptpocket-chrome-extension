@@ -940,13 +940,6 @@ class PromptPocketExtension {
                     </svg>
                     ${this.t('copyToClipboard')}
                 </button>
-                <button type="button" id="pasteInPageBtn" class="btn btn-ghost">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                    </svg>
-                    ${this.t('pasteInPage')}
-                </button>
             </div>
         `;
 
@@ -954,12 +947,7 @@ class PromptPocketExtension {
 
         // Wire up copy button
         document.getElementById('copyPromptBtn').addEventListener('click', () => {
-            this.handleCopyPrompt(prompt, false);
-        });
-
-        // Wire up paste button
-        document.getElementById('pasteInPageBtn').addEventListener('click', () => {
-            this.handleCopyPrompt(prompt, true);
+            this.handleCopyPrompt(prompt);
         });
 
         // Enter key on variable fields triggers copy
@@ -967,13 +955,13 @@ class PromptPocketExtension {
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    this.handleCopyPrompt(prompt, false);
+                    this.handleCopyPrompt(prompt);
                 }
             });
         });
     }
 
-    async handleCopyPrompt(prompt, pasteInPage) {
+    async handleCopyPrompt(prompt) {
         // Collect variable values
         const variables = {};
         document.querySelectorAll('.variable-field input').forEach((input) => {
@@ -989,30 +977,8 @@ class PromptPocketExtension {
             const response = await this.copyPrompt(prompt.id, variables);
             const resolvedContent = response.data.content;
 
-            if (pasteInPage) {
-                // Copy to clipboard then paste via content script
-                await navigator.clipboard.writeText(resolvedContent);
-                const [tab] = await chrome.tabs.query({
-                    active: true,
-                    currentWindow: true,
-                });
-                if (tab?.id) {
-                    await chrome.scripting.executeScript({
-                        target: { tabId: tab.id },
-                        func: () => {
-                            // Try to paste into the last focused editable element
-                            const el = document.activeElement;
-                            if (el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.isContentEditable)) {
-                                document.execCommand('paste');
-                            }
-                        },
-                    });
-                }
-                this.showToast(this.t('copiedToClipboard'), 'success');
-            } else {
-                await navigator.clipboard.writeText(resolvedContent);
-                this.showToast(this.t('copiedToClipboard'), 'success');
-            }
+            await navigator.clipboard.writeText(resolvedContent);
+            this.showToast(this.t('copiedToClipboard'), 'success');
 
             // Show missing snippets warning
             if (response.data.missing_snippets && response.data.missing_snippets.length > 0) {
