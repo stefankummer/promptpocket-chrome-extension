@@ -79,6 +79,21 @@ const LOCALES = {
         create: 'Create',
         noItemsFound: 'No items found',
 
+        // Search tab
+        searchPrompts: 'Search',
+        searchPromptsPlaceholder: 'Search your prompts...',
+        noPromptsFound: 'No prompts found',
+        searchHint: 'Search by title, content, description or tags',
+        copyToClipboard: 'Copy to Clipboard',
+        fillVariables: 'Fill Variables',
+        fillVariablesDescription: 'This prompt contains variables. Fill them in below before copying.',
+        copiedToClipboard: 'Copied to clipboard!',
+        failedToCopy: 'Failed to copy',
+        pasteInPage: 'Paste in page',
+        snippetsResolved: 'Snippets resolved',
+        missingSnippets: 'Missing snippets',
+        back: 'Back',
+
         // Messages
         connectedSuccess: 'Connected successfully!',
         loggedOut: 'Logged out',
@@ -89,6 +104,7 @@ const LOCALES = {
         invalidApiKey: 'Invalid API key',
         sessionExpired: 'Session expired. Please reconnect.',
         failedToLoad: 'Failed to load data',
+        searchNotAvailable: 'Search is not available. Please update the extension or try again later.',
         titleContentRequired: 'Title and content are required',
         failedToSave: 'Failed to save prompt',
         remove: 'Remove',
@@ -173,6 +189,21 @@ const LOCALES = {
         create: 'Créer',
         noItemsFound: 'Aucun élément trouvé',
 
+        // Search tab
+        searchPrompts: 'Rechercher',
+        searchPromptsPlaceholder: 'Rechercher vos prompts...',
+        noPromptsFound: 'Aucun prompt trouvé',
+        searchHint: 'Rechercher par titre, contenu, description ou tags',
+        copyToClipboard: 'Copier dans le presse-papiers',
+        fillVariables: 'Remplir les variables',
+        fillVariablesDescription: 'Ce prompt contient des variables. Remplissez-les ci-dessous avant de copier.',
+        copiedToClipboard: 'Copié dans le presse-papiers !',
+        failedToCopy: 'Échec de la copie',
+        pasteInPage: 'Coller dans la page',
+        snippetsResolved: 'Snippets résolus',
+        missingSnippets: 'Snippets manquants',
+        back: 'Retour',
+
         // Messages
         connectedSuccess: 'Connecté avec succès !',
         loggedOut: 'Déconnecté',
@@ -183,6 +214,7 @@ const LOCALES = {
         invalidApiKey: 'Clé API invalide',
         sessionExpired: 'Session expirée. Veuillez vous reconnecter.',
         failedToLoad: 'Échec du chargement des données',
+        searchNotAvailable: "La recherche n'est pas disponible. Veuillez mettre à jour l'extension ou réessayer plus tard.",
         titleContentRequired: 'Le titre et le contenu sont requis',
         failedToSave: "Échec de l'enregistrement du prompt",
         remove: 'Supprimer',
@@ -267,6 +299,21 @@ const LOCALES = {
         create: 'Erstellen',
         noItemsFound: 'Keine Elemente gefunden',
 
+        // Search tab
+        searchPrompts: 'Suchen',
+        searchPromptsPlaceholder: 'Ihre Prompts durchsuchen...',
+        noPromptsFound: 'Keine Prompts gefunden',
+        searchHint: 'Suche nach Titel, Inhalt, Beschreibung oder Tags',
+        copyToClipboard: 'In die Zwischenablage kopieren',
+        fillVariables: 'Variablen ausfüllen',
+        fillVariablesDescription: 'Dieser Prompt enthält Variablen. Füllen Sie sie unten aus, bevor Sie kopieren.',
+        copiedToClipboard: 'In die Zwischenablage kopiert!',
+        failedToCopy: 'Kopieren fehlgeschlagen',
+        pasteInPage: 'In Seite einfügen',
+        snippetsResolved: 'Snippets aufgelöst',
+        missingSnippets: 'Fehlende Snippets',
+        back: 'Zurück',
+
         // Messages
         connectedSuccess: 'Erfolgreich verbunden!',
         loggedOut: 'Abgemeldet',
@@ -277,6 +324,7 @@ const LOCALES = {
         invalidApiKey: 'Ungültiger API-Schlüssel',
         sessionExpired: 'Sitzung abgelaufen. Bitte erneut verbinden.',
         failedToLoad: 'Laden der Daten fehlgeschlagen',
+        searchNotAvailable: 'Die Suche ist nicht verfügbar. Bitte aktualisieren Sie die Erweiterung oder versuchen Sie es später erneut.',
         titleContentRequired: 'Titel und Inhalt sind erforderlich',
         failedToSave: 'Speichern des Prompts fehlgeschlagen',
         remove: 'Entfernen',

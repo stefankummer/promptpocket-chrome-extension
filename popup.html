@@ -138,6 +138,9 @@
                     >
                         Add Prompt
                     </button>
+                    <button class="tab" data-tab="search" data-i18n="searchPrompts">
+                        Search
+                    </button>
                     <button class="tab" data-tab="quick" data-i18n="quickSave">
                         Quick Save
                     </button>
@@ -370,6 +373,39 @@
                             <span data-i18n="savePrompt">Save Prompt</span>
                         </button>
                     </form>
+                </div>
+
+                <!-- Search Tab -->
+                <div id="searchTab" class="tab-content">
+                    <div class="form-group">
+                        <div class="search-input-wrapper">
+                            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            <input
+                                type="text"
+                                id="searchPromptsInput"
+                                data-i18n-placeholder="searchPromptsPlaceholder"
+                                placeholder="Search your prompts..."
+                                autocomplete="off"
+                            />
+                        </div>
+                        <p class="search-hint" data-i18n="searchHint">Search by title, content, description or tags</p>
+                    </div>
+                    <div id="searchResults" class="search-results"></div>
+                </div>
+
+                <!-- Prompt Detail View (shown when a search result is clicked) -->
+                <div id="promptDetailView" class="tab-content">
+                    <button type="button" id="backToSearchBtn" class="btn btn-sm btn-ghost mb-2">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5"></path>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        <span data-i18n="back">Back</span>
+                    </button>
+                    <div id="promptDetailContent"></div>
                 </div>
 
                 <!-- Quick Save Tab -->

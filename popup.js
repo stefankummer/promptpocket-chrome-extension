@@ -235,6 +235,19 @@ class PromptPocketExtension {
         });
     }
 
+    async searchPrompts(query) {
+        const params = query ? `?q=${encodeURIComponent(query)}` : '';
+        const response = await this.apiRequest(`/prompts${params}`);
+        return response.data || [];
+    }
+
+    async copyPrompt(id, variables = {}) {
+        return await this.apiRequest(`/prompts/${id}/copy`, {
+            method: 'POST',
+            body: JSON.stringify({ variables }),
+        });
+    }
+
     // UI Methods
     showView(viewId) {
         document.querySelectorAll('.view').forEach((view) => {
@@ -695,6 +708,8 @@ class PromptPocketExtension {
             this.setupMultiSelect('tools');
             this.setupMultiSelect('tags');
             this.setupFolderSelect();
+            this.searchLoaded = false;
+            this.setupSearch();
 
             // Apply default settings
             document.getElementById('promptStatus').value =
@@ -757,6 +772,268 @@ class PromptPocketExtension {
         this.setupMultiSelect('tags');
         this.setupFolderSelect();
         this.updateVisibilityLabel(false);
+    }
+
+    // Search Methods
+    setupSearch() {
+        const input = document.getElementById('searchPromptsInput');
+        let debounceTimer = null;
+
+        input.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                this.performSearch(input.value.trim());
+            }, 300);
+        });
+
+        // Load recent prompts on tab switch
+        input.addEventListener('focus', () => {
+            if (!input.value.trim() && !this.searchLoaded) {
+                this.performSearch('');
+            }
+        });
+    }
+
+    async performSearch(query) {
+        const resultsContainer = document.getElementById('searchResults');
+
+        try {
+            const prompts = await this.searchPrompts(query);
+            this.searchLoaded = true;
+            this.renderSearchResults(prompts, query);
+        } catch (error) {
+            console.error('Search error:', error);
+            const message = error.message?.includes('405') || error.message?.includes('not supported')
+                ? this.t('searchNotAvailable')
+                : this.t('failedToLoad');
+            resultsContainer.innerHTML = `<div class="search-empty">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                ${message}
+            </div>`;
+        }
+    }
+
+    renderSearchResults(prompts, query) {
+        const container = document.getElementById('searchResults');
+
+        if (prompts.length === 0) {
+            container.innerHTML = `
+                <div class="search-empty">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    ${this.t('noPromptsFound')}
+                </div>
+            `;
+            return;
+        }
+
+        // Store prompts by ID for safe retrieval (avoids HTML encoding issues)
+        this.searchResultsMap = {};
+        prompts.forEach((p) => {
+            this.searchResultsMap[p.id] = p;
+        });
+
+        container.innerHTML = prompts
+            .map(
+                (prompt) => `
+            <div class="search-result-item" data-prompt-id="${prompt.id}">
+                <div class="search-result-title">${this.escapeHtml(prompt.title)}</div>
+                ${prompt.description ? `<div class="search-result-description">${this.escapeHtml(prompt.description)}</div>` : ''}
+                ${
+                    prompt.tags && prompt.tags.length
+                        ? `<div class="search-result-tags">${prompt.tags
+                              .slice(0, 3)
+                              .map((tag) => `<span class="search-result-tag">#${this.escapeHtml(tag)}</span>`)
+                              .join('')}</div>`
+                        : ''
+                }
+            </div>
+        `,
+            )
+            .join('');
+
+        container.querySelectorAll('.search-result-item').forEach((item) => {
+            item.addEventListener('click', () => {
+                const prompt = this.searchResultsMap[item.dataset.promptId];
+                if (prompt) {
+                    this.showPromptDetail(prompt);
+                }
+            });
+        });
+    }
+
+    showPromptDetail(prompt) {
+        this.currentDetailPrompt = prompt;
+
+        // Hide search tab, show detail view
+        document.getElementById('searchTab').classList.remove('active');
+        document.getElementById('promptDetailView').classList.add('active');
+
+        // Hide tabs bar
+        document.querySelector('.tabs').style.display = 'none';
+
+        const content = prompt.content;
+
+        // Detect variables: {name} but not {snippet:name}
+        const varMatches = [...content.matchAll(/\{(?!snippet:)([^}]+)\}/g)];
+        const uniqueVars = [...new Set(varMatches.map((m) => m[1]))];
+
+        // Detect snippets: {snippet:name}
+        const snippetMatches = [...content.matchAll(/\{snippet:([^}]+)\}/g)];
+        const uniqueSnippets = [...new Set(snippetMatches.map((m) => m[1]))];
+
+        let html = '';
+
+        // Title
+        html += `<div class="prompt-detail-title">${this.escapeHtml(prompt.title)}</div>`;
+
+        // Description
+        if (prompt.description) {
+            html += `<div class="prompt-detail-description">${this.escapeHtml(prompt.description)}</div>`;
+        }
+
+        // Tags
+        if (prompt.tags && prompt.tags.length) {
+            html += `<div class="prompt-detail-meta">${prompt.tags
+                .map((tag) => `<span class="search-result-tag">#${this.escapeHtml(tag)}</span>`)
+                .join('')}</div>`;
+        }
+
+        // Content preview
+        html += `<div class="prompt-detail-content">${this.escapeHtml(content)}</div>`;
+
+        // Snippet info
+        if (uniqueSnippets.length > 0) {
+            html += `<div class="snippet-info">${this.t('snippetsResolved')}: ${uniqueSnippets.map((s) => `{snippet:${this.escapeHtml(s)}}`).join(', ')}</div>`;
+        }
+
+        // Variable form
+        if (uniqueVars.length > 0) {
+            html += `<div class="variable-form">`;
+            html += `<div class="variable-form-title">${this.t('fillVariables')}</div>`;
+            html += `<div class="variable-form-hint">${this.t('fillVariablesDescription')}</div>`;
+            uniqueVars.forEach((v) => {
+                const label = v.replace(/_/g, ' ');
+                html += `
+                    <div class="variable-field">
+                        <label for="var_${this.escapeHtml(v)}">${this.escapeHtml(label)}</label>
+                        <input type="text" id="var_${this.escapeHtml(v)}" data-variable="${this.escapeHtml(v)}" placeholder="${this.escapeHtml(label)}..." autocomplete="off" />
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        // Actions
+        html += `
+            <div class="prompt-detail-actions">
+                <button type="button" id="copyPromptBtn" class="btn btn-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    ${this.t('copyToClipboard')}
+                </button>
+                <button type="button" id="pasteInPageBtn" class="btn btn-ghost">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    </svg>
+                    ${this.t('pasteInPage')}
+                </button>
+            </div>
+        `;
+
+        document.getElementById('promptDetailContent').innerHTML = html;
+
+        // Wire up copy button
+        document.getElementById('copyPromptBtn').addEventListener('click', () => {
+            this.handleCopyPrompt(prompt, false);
+        });
+
+        // Wire up paste button
+        document.getElementById('pasteInPageBtn').addEventListener('click', () => {
+            this.handleCopyPrompt(prompt, true);
+        });
+
+        // Enter key on variable fields triggers copy
+        document.querySelectorAll('.variable-field input').forEach((input) => {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.handleCopyPrompt(prompt, false);
+                }
+            });
+        });
+    }
+
+    async handleCopyPrompt(prompt, pasteInPage) {
+        // Collect variable values
+        const variables = {};
+        document.querySelectorAll('.variable-field input').forEach((input) => {
+            const varName = input.dataset.variable;
+            if (varName) {
+                variables[varName] = input.value;
+            }
+        });
+
+        this.showLoading();
+
+        try {
+            const response = await this.copyPrompt(prompt.id, variables);
+            const resolvedContent = response.data.content;
+
+            if (pasteInPage) {
+                // Copy to clipboard then paste via content script
+                await navigator.clipboard.writeText(resolvedContent);
+                const [tab] = await chrome.tabs.query({
+                    active: true,
+                    currentWindow: true,
+                });
+                if (tab?.id) {
+                    await chrome.scripting.executeScript({
+                        target: { tabId: tab.id },
+                        func: () => {
+                            // Try to paste into the last focused editable element
+                            const el = document.activeElement;
+                            if (el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.isContentEditable)) {
+                                document.execCommand('paste');
+                            }
+                        },
+                    });
+                }
+                this.showToast(this.t('copiedToClipboard'), 'success');
+            } else {
+                await navigator.clipboard.writeText(resolvedContent);
+                this.showToast(this.t('copiedToClipboard'), 'success');
+            }
+
+            // Show missing snippets warning
+            if (response.data.missing_snippets && response.data.missing_snippets.length > 0) {
+                setTimeout(() => {
+                    this.showToast(
+                        `${this.t('missingSnippets')}: ${response.data.missing_snippets.join(', ')}`,
+                        'error',
+                    );
+                }, 1500);
+            }
+        } catch (error) {
+            this.showToast(error.message || this.t('failedToCopy'), 'error');
+        } finally {
+            this.hideLoading();
+        }
+    }
+
+    hidePromptDetail() {
+        document.getElementById('promptDetailView').classList.remove('active');
+        document.getElementById('searchTab').classList.add('active');
+        document.querySelector('.tabs').style.display = '';
     }
 
     // Event Listeners
@@ -836,6 +1113,13 @@ class PromptPocketExtension {
             this.showView('settingsView');
         });
 
+        // Back to search button
+        document
+            .getElementById('backToSearchBtn')
+            .addEventListener('click', () => {
+                this.hidePromptDetail();
+            });
+
         // Shortcuts button
         document
             .getElementById('shortcutsBtn')
@@ -908,10 +1192,19 @@ class PromptPocketExtension {
                     .querySelectorAll('.tab-content')
                     .forEach((c) => c.classList.remove('active'));
 
+                // Ensure prompt detail is hidden and tabs bar is visible
+                document.getElementById('promptDetailView').classList.remove('active');
+                document.querySelector('.tabs').style.display = '';
+
                 tab.classList.add('active');
                 document
                     .getElementById(`${tab.dataset.tab}Tab`)
                     .classList.add('active');
+
+                // Auto-load recent prompts when switching to search tab
+                if (tab.dataset.tab === 'search' && !this.searchLoaded) {
+                    this.performSearch('');
+                }
             });
         });
 
