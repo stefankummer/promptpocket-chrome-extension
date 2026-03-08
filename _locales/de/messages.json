@@ -4,7 +4,7 @@
         "description": "The name of the extension"
     },
     "extensionDescription": {
-        "message": "Speichern Sie KI-Prompts von jeder Website in Ihrem PromptPocket-Konto. Organisieren, taggen und greifen Sie überall auf Ihre Prompts zu. Alle Daten im Ruhezustand mit AES-256 verschlüsselt.",
+        "message": "KI-Prompts von jeder Seite in PromptPocket speichern. Organisieren, taggen und überall zugreifen. AES-256 verschlüsselt.",
         "description": "The description of the extension"
     },
     "contextMenuSave": {
