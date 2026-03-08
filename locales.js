@@ -4,6 +4,7 @@ const LOCALES = {
     en: {
         // Header
         appName: 'PromptPocket',
+        encryptionBadge: 'AES-256 Encrypted',
         settings: 'Settings',
 
         // Login
@@ -113,6 +114,7 @@ const LOCALES = {
     fr: {
         // Header
         appName: 'PromptPocket',
+        encryptionBadge: 'Chiffrement AES-256',
         settings: 'Paramètres',
 
         // Login
@@ -222,6 +224,7 @@ const LOCALES = {
     de: {
         // Header
         appName: 'PromptPocket',
+        encryptionBadge: 'AES-256 Verschlüsselt',
         settings: 'Einstellungen',
 
         // Login
